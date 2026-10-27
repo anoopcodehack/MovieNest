@@ -1,4 +1,4 @@
-// Standard clean UI icons (No AI styling)
+// Standard clean UI icons with smooth rendering
 export const PlayIcon = ({ size = 18, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M8 5v14l11-7z" />
@@ -50,7 +50,7 @@ export const SearchIcon = ({ size = 18, color = "currentColor" }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke={color}
-    strokeWidth="2"
+    strokeWidth="2.2"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -185,12 +185,28 @@ export const ArrowLeftIcon = ({ size = 18, color = "currentColor" }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke={color}
-    strokeWidth="2"
+    strokeWidth="2.2"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
     <line x1="19" y1="12" x2="5" y2="12" />
     <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+export const ArrowUpIcon = ({ size = 18, color = "currentColor" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5 12 12 5 19 12" />
   </svg>
 );
 

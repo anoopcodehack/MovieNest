@@ -8,11 +8,22 @@ function Navbar({ favoritesCount = 0 }) {
   const [theme, setThemeState] = useState(getTheme());
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(searchParams.get("q") || "");
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Custom hook: debounce search input by 400ms to avoid TMDB API rate limiting
+  // Custom hook: debounce search input by 400ms
   const debouncedSearch = useDebounce(searchInput, 400);
+
+  // Detect scroll position to add dynamic glass blur depth
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleWindowScroll);
+    return () => window.removeEventListener("scroll", handleWindowScroll);
+  }, []);
 
   // Sync internal input when URL param changes
   useEffect(() => {
@@ -66,7 +77,7 @@ function Navbar({ favoritesCount = 0 }) {
   const isFavoritesActive = location.pathname === "/favorites";
 
   return (
-    <nav className="nav">
+    <nav className={`nav ${isScrolled ? "nav-scrolled" : ""}`}>
       <div className="nav-left">
         <Link to="/" className="logo">
           MOVIENEST
@@ -74,22 +85,22 @@ function Navbar({ favoritesCount = 0 }) {
 
         <div className="nav-links">
           <Link to="/" className={`nav-link ${isHomeActive ? "active" : ""}`}>
-            Home
+            <span>Home</span>
           </Link>
           <Link to="/tv" className={`nav-link ${isTvActive ? "active" : ""}`}>
-            TV Shows
+            <span>TV Shows</span>
           </Link>
           <Link
             to="/explore"
             className={`nav-link ${isExploreActive ? "active" : ""}`}
           >
-            Explore
+            <span>Explore</span>
           </Link>
           <Link
             to="/favorites"
             className={`nav-link ${isFavoritesActive ? "active" : ""}`}
           >
-            My List
+            <span>My List</span>
             {favoritesCount > 0 && (
               <span className="nav-count">({favoritesCount})</span>
             )}
