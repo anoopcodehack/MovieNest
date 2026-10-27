@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "./pages/Home";
+import TVShows from "./pages/TVShows";
+import Explore from "./pages/Explore";
 import Favorites from "./pages/Favorites";
 import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
@@ -21,10 +23,10 @@ function App() {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  const addFavorite = (movie) => {
+  const addFavorite = (item) => {
     setFavorites((prev) => {
-      if (prev.some((f) => f.id === movie.id)) return prev;
-      return [...prev, movie];
+      if (prev.some((f) => f.id === item.id)) return prev;
+      return [...prev, item];
     });
   };
 
@@ -43,6 +45,28 @@ function App() {
               path="/"
               element={
                 <Home
+                  favorites={favorites}
+                  onAddFavorite={addFavorite}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
+            />
+
+            <Route
+              path="/tv"
+              element={
+                <TVShows
+                  favorites={favorites}
+                  onAddFavorite={addFavorite}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
+            />
+
+            <Route
+              path="/explore"
+              element={
+                <Explore
                   favorites={favorites}
                   onAddFavorite={addFavorite}
                   onRemoveFavorite={removeFavorite}

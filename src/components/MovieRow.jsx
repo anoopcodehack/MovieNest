@@ -1,14 +1,19 @@
 import { memo } from "react";
 import MovieCard from "./MovieCard";
 
-function MovieRow({ title, movies = [], favorites = [], onFavToggle }) {
+function MovieRow({
+  title,
+  movies = [],
+  favorites = [],
+  onFavToggle,
+  onPlayTrailer,
+}) {
   if (!movies || !movies.length) return null;
 
   return (
     <section className="row">
       <div className="row-header">
         <div className="row-title-container">
-          <div className="row-accent-bar" />
           <h2 className="row-title">{title}</h2>
         </div>
       </div>
@@ -22,6 +27,7 @@ function MovieRow({ title, movies = [], favorites = [], onFavToggle }) {
               movie={movie}
               isFav={isFavorite}
               onFavToggle={onFavToggle}
+              onPlayTrailer={onPlayTrailer}
             />
           );
         })}

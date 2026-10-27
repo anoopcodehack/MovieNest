@@ -6,15 +6,17 @@ import {
   getTopRated,
   getUpcoming,
   searchMovies,
+  getMovieVideos,
 } from "../api/tmdb";
 import MovieRow from "../components/MovieRow";
 import MovieSlider from "../components/MovieSlider";
 import HeroBanner from "../components/HeroBanner";
 import MovieCard from "../components/MovieCard";
+import TrailerModal from "../components/TrailerModal";
 import { SkeletonHero, SkeletonRow, SkeletonSpinner } from "../components/Loader";
 import { CloseIcon } from "../components/Icons";
 
-function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
+function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
   const [topRated, setTopRated] = useState([]);
@@ -30,6 +32,13 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
+
+  // Trailer Modal State
+  const [trailerData, setTrailerData] = useState({
+    isOpen: false,
+    videoKey: null,
+    title: "",
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -140,6 +149,33 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
     setSearchParams({});
   };
 
+  const handlePlayTrailer = async (movie) => {
+    try {
+      const res = await getMovieVideos(movie.id);
+      const videos = res.results || [];
+      const trailer =
+        videos.find((v) => v.type === "Trailer" && v.site === "YouTube") ||
+        videos.find((v) => v.site === "YouTube");
+
+      setTrailerData({
+        isOpen: true,
+        videoKey: trailer ? trailer.key : null,
+        title: movie.title || movie.name || "Movie",
+      });
+    } catch (err) {
+      console.error("Error fetching trailer:", err);
+      setTrailerData({
+        isOpen: true,
+        videoKey: null,
+        title: movie.title || movie.name || "Movie",
+      });
+    }
+  };
+
+  const closeTrailer = () => {
+    setTrailerData({ isOpen: false, videoKey: null, title: "" });
+  };
+
   if (query.trim()) {
     return (
       <main className="search-results-section">
@@ -187,11 +223,19 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
                   movie={movie}
                   isFav={isFavorite}
                   onFavToggle={handleFavToggle}
+                  onPlayTrailer={handlePlayTrailer}
                 />
               );
             })}
           </div>
         )}
+
+        <TrailerModal
+          isOpen={trailerData.isOpen}
+          onClose={closeTrailer}
+          videoKey={trailerData.videoKey}
+          title={trailerData.title}
+        />
       </main>
     );
   }
@@ -218,6 +262,7 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
           movie={featuredMovie}
           isFav={isFeaturedFav}
           onFavToggle={handleFavToggle}
+          onPlayTrailer={handlePlayTrailer}
         />
       )}
 
@@ -227,6 +272,7 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
           movies={trending}
           favorites={favorites}
           onFavToggle={handleFavToggle}
+          onPlayTrailer={handlePlayTrailer}
         />
       </div>
 
@@ -236,6 +282,7 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
           movies={topRated}
           favorites={favorites}
           onFavToggle={handleFavToggle}
+          onPlayTrailer={handlePlayTrailer}
         />
       </div>
 
@@ -245,6 +292,7 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
           movies={popular}
           favorites={favorites}
           onFavToggle={handleFavToggle}
+          onPlayTrailer={handlePlayTrailer}
         />
         {popularLoading && (
           <SkeletonSpinner text="Loading more titles..." />
@@ -257,8 +305,16 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
           movies={upcoming}
           favorites={favorites}
           onFavToggle={handleFavToggle}
+          onPlayTrailer={handlePlayTrailer}
         />
       </div>
+
+      <TrailerModal
+        isOpen={trailerData.isOpen}
+        onClose={closeTrailer}
+        videoKey={trailerData.videoKey}
+        title={trailerData.title}
+      />
     </main>
   );
 }

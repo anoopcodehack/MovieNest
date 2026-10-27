@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getTheme, setTheme } from "../utils/theme";
+import useDebounce from "../hooks/useDebounce";
 import { SearchIcon, CloseIcon, SunIcon, MoonIcon } from "./Icons";
 
 function Navbar({ favoritesCount = 0 }) {
@@ -10,9 +11,29 @@ function Navbar({ favoritesCount = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Custom hook: debounce search input by 400ms to avoid TMDB API rate limiting
+  const debouncedSearch = useDebounce(searchInput, 400);
+
+  // Sync internal input when URL param changes
   useEffect(() => {
     setSearchInput(searchParams.get("q") || "");
   }, [searchParams]);
+
+  // Trigger search on debounce
+  useEffect(() => {
+    const currentQ = searchParams.get("q") || "";
+    const trimmed = debouncedSearch.trim();
+
+    if (trimmed && trimmed !== currentQ) {
+      if (location.pathname !== "/") {
+        navigate(`/?q=${encodeURIComponent(trimmed)}`);
+      } else {
+        setSearchParams({ q: trimmed });
+      }
+    } else if (!trimmed && currentQ && location.pathname === "/") {
+      setSearchParams({});
+    }
+  }, [debouncedSearch, location.pathname, navigate, searchParams, setSearchParams]);
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -29,10 +50,6 @@ function Navbar({ favoritesCount = 0 }) {
       } else {
         setSearchParams({ q: trimmed });
       }
-    } else {
-      if (location.pathname === "/") {
-        setSearchParams({});
-      }
     }
   };
 
@@ -44,6 +61,8 @@ function Navbar({ favoritesCount = 0 }) {
   };
 
   const isHomeActive = location.pathname === "/" && !searchParams.get("q");
+  const isTvActive = location.pathname === "/tv";
+  const isExploreActive = location.pathname === "/explore";
   const isFavoritesActive = location.pathname === "/favorites";
 
   return (
@@ -56,6 +75,15 @@ function Navbar({ favoritesCount = 0 }) {
         <div className="nav-links">
           <Link to="/" className={`nav-link ${isHomeActive ? "active" : ""}`}>
             Home
+          </Link>
+          <Link to="/tv" className={`nav-link ${isTvActive ? "active" : ""}`}>
+            TV Shows
+          </Link>
+          <Link
+            to="/explore"
+            className={`nav-link ${isExploreActive ? "active" : ""}`}
+          >
+            Explore
           </Link>
           <Link
             to="/favorites"

@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
 import { StarIcon, PlusIcon, CheckIcon, PlayIcon } from "./Icons";
 
-function MovieCard({ movie, isFav, onFavToggle }) {
+function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
   if (!movie) return null;
+
+  const title = movie.title || movie.name || "Untitled";
+  const releaseDate = movie.release_date || movie.first_air_date || "";
+  const year = releaseDate ? releaseDate.slice(0, 4) : "N/A";
+  const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "—";
+  const isTv = Boolean(movie.first_air_date || movie.name);
+  const detailLink = `/movie/${movie.id}${isTv ? "?type=tv" : ""}`;
 
   const poster = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80";
-
-  const year = movie.release_date?.slice(0, 4) || "N/A";
-  const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "—";
 
   const handleFavClick = (e) => {
     e.preventDefault();
@@ -17,11 +21,19 @@ function MovieCard({ movie, isFav, onFavToggle }) {
     onFavToggle(movie);
   };
 
+  const handlePlayClick = (e) => {
+    if (onPlayTrailer) {
+      e.preventDefault();
+      e.stopPropagation();
+      onPlayTrailer(movie);
+    }
+  };
+
   return (
     <div className="movie-card">
       <img
         src={poster}
-        alt={movie.title || "Movie Poster"}
+        alt={title}
         className="movie-poster-img"
         loading="lazy"
         onError={(e) => {
@@ -40,18 +52,30 @@ function MovieCard({ movie, isFav, onFavToggle }) {
 
       {/* Hover Information Overlay */}
       <div className="movie-card-overlay">
-        <h4 className="card-title">{movie.title}</h4>
+        <h4 className="card-title">{title}</h4>
         <div className="card-meta">
           <span>{year}</span>
           <span>•</span>
-          <span className="card-quality">HD</span>
+          <span className="card-quality">{isTv ? "TV" : "HD"}</span>
         </div>
 
         <div className="card-actions">
-          <Link to={`/movie/${movie.id}`} className="card-btn-play" title="View details">
-            <PlayIcon size={14} />
-            <span>Play</span>
-          </Link>
+          {onPlayTrailer ? (
+            <button
+              type="button"
+              className="card-btn-play"
+              onClick={handlePlayClick}
+              title="Watch Trailer"
+            >
+              <PlayIcon size={14} />
+              <span>Play</span>
+            </button>
+          ) : (
+            <Link to={detailLink} className="card-btn-play" title="View details">
+              <PlayIcon size={14} />
+              <span>Play</span>
+            </Link>
+          )}
 
           <button
             type="button"

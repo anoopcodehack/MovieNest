@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMovieDetails } from "../api/tmdb";
+import { getMovieDetails, getTvVideos, getMovieVideos } from "../api/tmdb";
 import {
   StarIcon,
   ClockIcon,
@@ -8,13 +8,25 @@ import {
   ArrowLeftIcon,
   PlusIcon,
   CheckIcon,
+  PlayIcon,
 } from "../components/Icons";
 import { SkeletonSpinner } from "../components/Loader";
+import TrailerModal from "../components/TrailerModal";
 
 function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const isTv = searchParams.get("type") === "tv";
+
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Trailer Modal state
+  const [trailerData, setTrailerData] = useState({
+    isOpen: false,
+    videoKey: null,
+    title: "",
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -36,6 +48,40 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     };
   }, [id]);
 
+  const handlePlayTrailer = async () => {
+    if (!movie) return;
+    try {
+      // Check if videos are already appended in movie object
+      let videos = movie.videos?.results || [];
+
+      if (!videos.length) {
+        const res = isTv ? await getTvVideos(id) : await getMovieVideos(id);
+        videos = res.results || [];
+      }
+
+      const trailer =
+        videos.find((v) => v.type === "Trailer" && v.site === "YouTube") ||
+        videos.find((v) => v.site === "YouTube");
+
+      setTrailerData({
+        isOpen: true,
+        videoKey: trailer ? trailer.key : null,
+        title: movie.title || movie.name || "Trailer",
+      });
+    } catch (err) {
+      console.error("Error opening trailer:", err);
+      setTrailerData({
+        isOpen: true,
+        videoKey: null,
+        title: movie.title || movie.name || "Trailer",
+      });
+    }
+  };
+
+  const closeTrailer = () => {
+    setTrailerData({ isOpen: false, videoKey: null, title: "" });
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -56,6 +102,7 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     );
   }
 
+  const title = movie.title || movie.name || "Untitled";
   const backdrop = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
     : movie.poster_path
@@ -66,11 +113,12 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80";
 
-  const releaseYear = movie.release_date?.slice(0, 4) || "N/A";
+  const releaseDate = movie.release_date || movie.first_air_date || "";
+  const releaseYear = releaseDate ? releaseDate.slice(0, 4) : "N/A";
   const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "N/A";
 
   const formatRuntime = (mins) => {
-    if (!mins) return "N/A";
+    if (!mins) return isTv ? "TV Series" : "N/A";
     const h = Math.floor(mins / 60);
     const m = mins % 60;
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
@@ -93,7 +141,7 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     <div className="details-page">
       {/* Cinematic Backdrop */}
       <div className="details-hero">
-        <img src={backdrop} alt={movie.title} className="details-backdrop-img" />
+        <img src={backdrop} alt={title} className="details-backdrop-img" />
         <div className="details-backdrop-overlay" />
       </div>
 
@@ -102,7 +150,7 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         <div className="details-poster-box">
           <img
             src={poster}
-            alt={movie.title}
+            alt={title}
             className="details-poster-img"
             onError={(e) => {
               e.currentTarget.src =
@@ -117,7 +165,7 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
             <span>Back to Browse</span>
           </Link>
 
-          <h1 className="details-title">{movie.title}</h1>
+          <h1 className="details-title">{title}</h1>
 
           {movie.tagline && (
             <p className="details-tagline">"{movie.tagline}"</p>
@@ -142,12 +190,12 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
 
             <span className="meta-text">
               <CalendarIcon size={14} />
-              {movie.release_date || releaseYear}
+              {releaseDate || releaseYear}
             </span>
 
             <span className="meta-divider">•</span>
 
-            <span className="quality-pill">HD</span>
+            <span className="quality-pill">{isTv ? "TV" : "HD"}</span>
           </div>
 
           {/* Genres */}
@@ -161,11 +209,20 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
             </div>
           )}
 
-          {/* Netflix Style Action Button */}
+          {/* Actions: Watch Trailer & My List */}
           <div className="details-actions">
             <button
               type="button"
-              className={isFavorite ? "btn-secondary" : "btn-primary"}
+              className="btn-play-action"
+              onClick={handlePlayTrailer}
+            >
+              <PlayIcon size={18} />
+              <span>Watch Trailer</span>
+            </button>
+
+            <button
+              type="button"
+              className={isFavorite ? "btn-secondary" : "btn-secondary"}
               onClick={handleToggleFavorite}
             >
               {isFavorite ? (
@@ -223,6 +280,13 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
           )}
         </div>
       </div>
+
+      <TrailerModal
+        isOpen={trailerData.isOpen}
+        onClose={closeTrailer}
+        videoKey={trailerData.videoKey}
+        title={trailerData.title}
+      />
     </div>
   );
 }

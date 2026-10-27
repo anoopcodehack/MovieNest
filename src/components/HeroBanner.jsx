@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 import { PlayIcon, PlusIcon, CheckIcon, StarIcon } from "./Icons";
 
-function HeroBanner({ movie, isFav, onFavToggle }) {
+function HeroBanner({ movie, isFav, onFavToggle, onPlayTrailer }) {
   if (!movie) return null;
+
+  const title = movie.title || movie.name || "Featured Title";
+  const releaseDate = movie.release_date || movie.first_air_date || "";
+  const year = releaseDate ? releaseDate.slice(0, 4) : "2025";
+  const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "N/A";
+  const isTv = Boolean(movie.first_air_date || movie.name);
+  const detailLink = `/movie/${movie.id}${isTv ? "?type=tv" : ""}`;
 
   const backdrop = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
@@ -10,23 +17,22 @@ function HeroBanner({ movie, isFav, onFavToggle }) {
     ? `https://image.tmdb.org/t/p/original${movie.poster_path}`
     : "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80";
 
-  const year = movie.release_date?.slice(0, 4) || "2025";
-  const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "N/A";
-
   return (
     <div className="hero-banner">
       <div className="hero-backdrop-container">
-        <img src={backdrop} alt={movie.title} className="hero-backdrop-img" />
+        <img src={backdrop} alt={title} className="hero-backdrop-img" />
         <div className="hero-gradient-overlay" />
       </div>
 
       <div className="hero-content">
         <div className="hero-tag">
           <span className="hero-tag-badge">TOP 10</span>
-          <span className="hero-tag-text">#1 in Movies Today</span>
+          <span className="hero-tag-text">
+            {isTv ? "#1 in TV Shows Today" : "#1 in Movies Today"}
+          </span>
         </div>
 
-        <h1 className="hero-title">{movie.title}</h1>
+        <h1 className="hero-title">{title}</h1>
 
         <div className="hero-meta">
           <span className="hero-rating">
@@ -36,7 +42,7 @@ function HeroBanner({ movie, isFav, onFavToggle }) {
           <span className="hero-meta-divider">•</span>
           <span>{year}</span>
           <span className="hero-meta-divider">•</span>
-          <span className="hero-quality-badge">HD</span>
+          <span className="hero-quality-badge">{isTv ? "TV-MA" : "HD"}</span>
         </div>
 
         <p className="hero-overview">
@@ -44,10 +50,21 @@ function HeroBanner({ movie, isFav, onFavToggle }) {
         </p>
 
         <div className="hero-actions">
-          <Link to={`/movie/${movie.id}`} className="hero-btn-play">
-            <PlayIcon size={20} />
-            <span>Play</span>
-          </Link>
+          {onPlayTrailer ? (
+            <button
+              type="button"
+              className="hero-btn-play"
+              onClick={() => onPlayTrailer(movie)}
+            >
+              <PlayIcon size={20} />
+              <span>Watch Trailer</span>
+            </button>
+          ) : (
+            <Link to={detailLink} className="hero-btn-play">
+              <PlayIcon size={20} />
+              <span>Play</span>
+            </Link>
+          )}
 
           <button
             type="button"
