@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import TVShows from "./pages/TVShows";
 import Explore from "./pages/Explore";
+import Roulette from "./pages/Roulette";
 import Favorites from "./pages/Favorites";
 import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import CommandPalette from "./components/CommandPalette";
 import "./App.css";
 
 function App() {
@@ -19,9 +21,24 @@ function App() {
     }
   });
 
+  const [isCmdOpen, setIsCmdOpen] = useState(false);
+
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  // Global Ctrl+K / Cmd+K Command Palette Shortcut listener
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCmdOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, []);
 
   const addFavorite = (item) => {
     setFavorites((prev) => {
@@ -37,7 +54,10 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Navbar favoritesCount={favorites.length} />
+        <Navbar
+          favoritesCount={favorites.length}
+          onOpenCmd={() => setIsCmdOpen(true)}
+        />
 
         <div className="main-content">
           <Routes>
@@ -75,6 +95,17 @@ function App() {
             />
 
             <Route
+              path="/roulette"
+              element={
+                <Roulette
+                  favorites={favorites}
+                  onAddFavorite={addFavorite}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
+            />
+
+            <Route
               path="/favorites"
               element={
                 <Favorites
@@ -98,6 +129,11 @@ function App() {
         </div>
 
         <Footer />
+
+        <CommandPalette
+          isOpen={isCmdOpen}
+          onClose={() => setIsCmdOpen(false)}
+        />
       </div>
     </BrowserRouter>
   );

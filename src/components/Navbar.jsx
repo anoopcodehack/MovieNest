@@ -4,7 +4,7 @@ import { getTheme, setTheme } from "../utils/theme";
 import useDebounce from "../hooks/useDebounce";
 import { SearchIcon, CloseIcon, SunIcon, MoonIcon } from "./Icons";
 
-function Navbar({ favoritesCount = 0 }) {
+function Navbar({ favoritesCount = 0, onOpenCmd }) {
   const [theme, setThemeState] = useState(getTheme());
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(searchParams.get("q") || "");
@@ -12,10 +12,8 @@ function Navbar({ favoritesCount = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Custom hook: debounce search input by 400ms
   const debouncedSearch = useDebounce(searchInput, 400);
 
-  // Detect scroll position to add dynamic glass blur depth
   useEffect(() => {
     const handleWindowScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -25,12 +23,10 @@ function Navbar({ favoritesCount = 0 }) {
     return () => window.removeEventListener("scroll", handleWindowScroll);
   }, []);
 
-  // Sync internal input when URL param changes
   useEffect(() => {
     setSearchInput(searchParams.get("q") || "");
   }, [searchParams]);
 
-  // Trigger search on debounce
   useEffect(() => {
     const currentQ = searchParams.get("q") || "";
     const trimmed = debouncedSearch.trim();
@@ -74,6 +70,7 @@ function Navbar({ favoritesCount = 0 }) {
   const isHomeActive = location.pathname === "/" && !searchParams.get("q");
   const isTvActive = location.pathname === "/tv";
   const isExploreActive = location.pathname === "/explore";
+  const isRouletteActive = location.pathname === "/roulette";
   const isFavoritesActive = location.pathname === "/favorites";
 
   return (
@@ -95,6 +92,12 @@ function Navbar({ favoritesCount = 0 }) {
             className={`nav-link ${isExploreActive ? "active" : ""}`}
           >
             <span>Explore</span>
+          </Link>
+          <Link
+            to="/roulette"
+            className={`nav-link ${isRouletteActive ? "active" : ""}`}
+          >
+            <span>Surprise Me 🎲</span>
           </Link>
           <Link
             to="/favorites"
@@ -120,7 +123,7 @@ function Navbar({ favoritesCount = 0 }) {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
-          {searchInput && (
+          {searchInput ? (
             <button
               type="button"
               className="nav-search-clear"
@@ -129,6 +132,17 @@ function Navbar({ favoritesCount = 0 }) {
             >
               <CloseIcon size={14} />
             </button>
+          ) : (
+            onOpenCmd && (
+              <button
+                type="button"
+                className="nav-cmd-kbd"
+                onClick={onOpenCmd}
+                title="Quick Spotlight (Ctrl+K)"
+              >
+                Ctrl K
+              </button>
+            )
           )}
         </form>
 

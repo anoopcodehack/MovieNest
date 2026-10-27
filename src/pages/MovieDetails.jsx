@@ -12,6 +12,7 @@ import {
 } from "../components/Icons";
 import { SkeletonSpinner } from "../components/Loader";
 import TrailerModal from "../components/TrailerModal";
+import PersonModal from "../components/PersonModal";
 
 function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   const { id } = useParams();
@@ -27,6 +28,9 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     videoKey: null,
     title: "",
   });
+
+  // Actor / Person Filmography Modal state
+  const [selectedPersonId, setSelectedPersonId] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,7 +55,6 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   const handlePlayTrailer = async () => {
     if (!movie) return;
     try {
-      // Check if videos are already appended in movie object
       let videos = movie.videos?.results || [];
 
       if (!videos.length) {
@@ -222,7 +225,7 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
 
             <button
               type="button"
-              className={isFavorite ? "btn-secondary" : "btn-secondary"}
+              className="btn-secondary"
               onClick={handleToggleFavorite}
             >
               {isFavorite ? (
@@ -245,10 +248,12 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
             {movie.overview || "No overview available for this title."}
           </p>
 
-          {/* Cast */}
+          {/* Cast with Click-to-Explore */}
           {castList.length > 0 && (
             <div className="cast-section">
-              <h3 className="details-section-title">Cast</h3>
+              <h3 className="details-section-title">
+                Cast <span className="cast-hint">(Click actor to view filmography)</span>
+              </h3>
               <div className="cast-grid">
                 {castList.map((actor) => {
                   const photo = actor.profile_path
@@ -256,7 +261,12 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
                     : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80";
 
                   return (
-                    <div key={actor.id} className="cast-card">
+                    <div
+                      key={actor.id}
+                      className="cast-card clickable"
+                      onClick={() => setSelectedPersonId(actor.id)}
+                      title={`View ${actor.name}'s filmography`}
+                    >
                       <img
                         src={photo}
                         alt={actor.name}
@@ -286,6 +296,14 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         onClose={closeTrailer}
         videoKey={trailerData.videoKey}
         title={trailerData.title}
+        movieId={id}
+        isTv={isTv}
+      />
+
+      <PersonModal
+        isOpen={Boolean(selectedPersonId)}
+        onClose={() => setSelectedPersonId(null)}
+        personId={selectedPersonId}
       />
     </div>
   );

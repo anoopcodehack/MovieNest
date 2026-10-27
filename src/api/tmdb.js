@@ -49,6 +49,12 @@ export const getOnTheAirTv = () =>
 export const getTvVideos = (id) =>
   fetchTMDB(`${BASE_URL}/tv/${id}/videos?api_key=${API_KEY}`);
 
+/* ================= People / Cast API ================= */
+export const getPersonDetails = (id) =>
+  fetchTMDB(
+    `${BASE_URL}/person/${id}?api_key=${API_KEY}&append_to_response=movie_credits`
+  );
+
 /* ================= Discover & Genres API ================= */
 export const getGenres = () =>
   fetchTMDB(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
