@@ -12,7 +12,7 @@ import MovieSlider from "../components/MovieSlider";
 import HeroBanner from "../components/HeroBanner";
 import MovieCard from "../components/MovieCard";
 import { SkeletonHero, SkeletonRow, SkeletonSpinner } from "../components/Loader";
-import { SearchIcon, CloseIcon } from "../components/Icons";
+import { CloseIcon } from "../components/Icons";
 
 function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
   const [trending, setTrending] = useState([]);
@@ -31,7 +31,6 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
 
-  // Initial fetch for main categories
   useEffect(() => {
     let isMounted = true;
     setLoadingInitial(true);
@@ -66,7 +65,6 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
     };
   }, []);
 
-  // Handle Search Query when URL search parameter changes
   useEffect(() => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -96,7 +94,6 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
     };
   }, [query]);
 
-  // Infinite scroll loader for Popular movies
   const loadMorePopular = useCallback(async () => {
     if (popularLoading || !popularHasMore || query) return;
 
@@ -143,17 +140,16 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
     setSearchParams({});
   };
 
-  // If search query is active
   if (query.trim()) {
     return (
       <main className="search-results-section">
         <div className="search-results-header">
           <div>
             <h1 className="search-results-title">
-              Search Results for <span style={{ color: "var(--accent)" }}>"{query}"</span>
+              Results for "{query}"
             </h1>
-            <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px" }}>
-              {searchResults.length} {searchResults.length === 1 ? "movie" : "movies"} found
+            <p className="search-results-count">
+              {searchResults.length} {searchResults.length === 1 ? "title" : "titles"}
             </p>
           </div>
 
@@ -163,25 +159,22 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
             onClick={handleClearSearch}
           >
             <CloseIcon size={14} />
-            <span>Clear Search</span>
+            <span>Clear</span>
           </button>
         </div>
 
         {searchLoading ? (
           <SkeletonSpinner text={`Searching for "${query}"...`} />
         ) : searchResults.length === 0 ? (
-          <div className="empty-favorites">
-            <div className="empty-icon-wrap">
-              <SearchIcon size={32} />
-            </div>
-            <h3>No movies found</h3>
-            <p>We couldn't find any results matching "{query}". Try checking the spelling or searching for another title.</p>
+          <div className="empty-state">
+            <h3>No results found</h3>
+            <p>Your search for "{query}" did not match any titles.</p>
             <button
               type="button"
-              className="btn-primary-cta"
+              className="btn-primary"
               onClick={handleClearSearch}
             >
-              Back to Home
+              Back to Browse
             </button>
           </div>
         ) : (
@@ -203,7 +196,6 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
     );
   }
 
-  // Initial Loading State
   if (loadingInitial) {
     return (
       <main>
@@ -221,7 +213,6 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
 
   return (
     <main>
-      {/* Featured Cinematic Hero Banner */}
       {featuredMovie && (
         <HeroBanner
           movie={featuredMovie}
@@ -230,52 +221,39 @@ function Home({ favorites, onAddFavorite, onRemoveFavorite }) {
         />
       )}
 
-      {/* Quick Category Jump Bar */}
-      <div className="filter-bar">
-        <span className="filter-pill active">All Categories</span>
-        <a href="#trending" className="filter-pill">Trending</a>
-        <a href="#top-rated" className="filter-pill">Top Rated</a>
-        <a href="#popular" className="filter-pill">Popular</a>
-        <a href="#upcoming" className="filter-pill">Upcoming</a>
-      </div>
-
-      {/* Trending Movies Slider */}
       <div id="trending">
         <MovieSlider
-          title="Trending This Week"
+          title="Trending Now"
           movies={trending}
           favorites={favorites}
           onFavToggle={handleFavToggle}
         />
       </div>
 
-      {/* Top Rated Row */}
       <div id="top-rated">
         <MovieRow
-          title="Top Rated Masterpieces"
+          title="Top Rated"
           movies={topRated}
           favorites={favorites}
           onFavToggle={handleFavToggle}
         />
       </div>
 
-      {/* Popular Movies Row with Infinite Scroll */}
       <div id="popular">
         <MovieRow
-          title="Popular Across MovieNest"
+          title="Popular on MovieNest"
           movies={popular}
           favorites={favorites}
           onFavToggle={handleFavToggle}
         />
         {popularLoading && (
-          <SkeletonSpinner text="Loading more popular movies..." />
+          <SkeletonSpinner text="Loading more titles..." />
         )}
       </div>
 
-      {/* Upcoming Movies Row */}
       <div id="upcoming">
         <MovieRow
-          title="Upcoming Blockbusters"
+          title="Upcoming Releases"
           movies={upcoming}
           favorites={favorites}
           onFavToggle={handleFavToggle}

@@ -1,11 +1,11 @@
-// Ultra-crisp SVG Icons for modern streaming UI
+// Standard clean UI icons (No AI styling)
 export const PlayIcon = ({ size = 18, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M8 5v14l11-7z" />
   </svg>
 );
 
-export const StarIcon = ({ size = 16, color = "#f5c518" }) => (
+export const StarIcon = ({ size = 16, color = "#e5a916" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
   </svg>
@@ -26,21 +26,6 @@ export const HeartIcon = ({ size = 18, filled = false, color = "currentColor" })
   </svg>
 );
 
-export const BookmarkIcon = ({ size = 18, filled = false, color = "currentColor" }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill={filled ? color : "none"}
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-  </svg>
-);
-
 export const SearchIcon = ({ size = 18, color = "currentColor" }) => (
   <svg
     width={size}
@@ -48,7 +33,7 @@ export const SearchIcon = ({ size = 18, color = "currentColor" }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke={color}
-    strokeWidth="2.2"
+    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -101,22 +86,6 @@ export const CheckIcon = ({ size = 18, color = "currentColor" }) => (
     strokeLinejoin="round"
   >
     <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-
-export const TrashIcon = ({ size = 18, color = "currentColor" }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polyline points="3 6 5 6 21 6" />
-    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
 );
 
@@ -199,7 +168,7 @@ export const ArrowLeftIcon = ({ size = 18, color = "currentColor" }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke={color}
-    strokeWidth="2.2"
+    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -227,24 +196,5 @@ export const FilmIcon = ({ size = 20, color = "currentColor" }) => (
     <line x1="2" y1="17" x2="7" y2="17" />
     <line x1="17" y1="17" x2="22" y2="17" />
     <line x1="17" y1="7" x2="22" y2="7" />
-  </svg>
-);
-
-export const SparklesIcon = ({ size = 16, color = "currentColor" }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-    <path d="M5 3v4" />
-    <path d="M19 17v4" />
-    <path d="M3 5h4" />
-    <path d="M17 19h4" />
   </svg>
 );

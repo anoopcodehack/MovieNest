@@ -1,70 +1,41 @@
 import { Link } from "react-router-dom";
-import { FilmIcon } from "./Icons";
 
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-left">
-          <Link to="/" className="logo">
-            <div className="logo-badge">
-              <FilmIcon size={20} color="#fff" />
-            </div>
-            <span className="logo-text">
-              Movie<span>Nest</span>
-            </span>
+          <Link to="/" className="footer-logo">
+            MOVIENEST
           </Link>
           <p className="footer-desc">
-            Your premier destination for streaming discovery. Explore trending
-            blockbusters, top-rated masterpieces, and curate your personal
-            watchlist powered by the TMDB API.
+            Browse and stream movie collections powered by the TMDB API.
           </p>
-          <div className="footer-tmdb-badge">
-            <span>Powered by TMDB API</span>
-            <span>•</span>
-            <span>Updated Daily</span>
-          </div>
         </div>
 
         <div className="footer-col">
-          <h4>Discover</h4>
+          <h4>Navigation</h4>
           <ul>
             <li>
-              <Link to="/">Trending Movies</Link>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/">Top Rated</Link>
-            </li>
-            <li>
-              <Link to="/">Popular Releases</Link>
-            </li>
-            <li>
-              <Link to="/favorites">My Watchlist</Link>
+              <Link to="/favorites">My List</Link>
             </li>
           </ul>
         </div>
 
         <div className="footer-col">
-          <h4>Platform</h4>
+          <h4>Information</h4>
           <ul>
             <li>
-              <a href="#about" onClick={(e) => e.preventDefault()}>
-                About MovieNest
+              <a href="#terms" onClick={(e) => e.preventDefault()}>
+                Terms of Use
               </a>
             </li>
             <li>
               <a href="#privacy" onClick={(e) => e.preventDefault()}>
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#terms" onClick={(e) => e.preventDefault()}>
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a href="#api" onClick={(e) => e.preventDefault()}>
-                API Attribution
+                Privacy Statement
               </a>
             </li>
           </ul>
@@ -72,8 +43,7 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} MovieNest. All rights reserved.</p>
-        <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+        <p>© {new Date().getFullYear()} MovieNest. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
       </div>
     </footer>
   );

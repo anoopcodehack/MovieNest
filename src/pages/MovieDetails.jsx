@@ -6,7 +6,7 @@ import {
   ClockIcon,
   CalendarIcon,
   ArrowLeftIcon,
-  HeartIcon,
+  PlusIcon,
   CheckIcon,
 } from "../components/Icons";
 import { SkeletonSpinner } from "../components/Loader";
@@ -39,18 +39,18 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   if (loading) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <SkeletonSpinner text="Loading cinematic details..." />
+        <SkeletonSpinner text="Loading title..." />
       </div>
     );
   }
 
   if (!movie) {
     return (
-      <div className="empty-favorites">
-        <h3>Movie Not Found</h3>
+      <div className="empty-state">
+        <h3>Title Not Found</h3>
         <p>We couldn't retrieve the details for this title.</p>
-        <Link to="/" className="btn-primary-cta">
-          Back to Home
+        <Link to="/" className="btn-primary">
+          Back to Browse
         </Link>
       </div>
     );
@@ -69,7 +69,6 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
   const releaseYear = movie.release_date?.slice(0, 4) || "N/A";
   const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "N/A";
 
-  // Format runtime from minutes to hours and minutes (e.g. 135 mins -> 2h 15m)
   const formatRuntime = (mins) => {
     if (!mins) return "N/A";
     const h = Math.floor(mins / 60);
@@ -92,15 +91,14 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
 
   return (
     <div className="details-page">
-      {/* Atmospheric Backdrop Header */}
+      {/* Cinematic Backdrop */}
       <div className="details-hero">
         <img src={backdrop} alt={movie.title} className="details-backdrop-img" />
         <div className="details-backdrop-overlay" />
       </div>
 
-      {/* Main Details Section */}
+      {/* Main Details Container */}
       <div className="details-container">
-        {/* Left: Poster Box */}
         <div className="details-poster-box">
           <img
             src={poster}
@@ -113,11 +111,10 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
           />
         </div>
 
-        {/* Right: Info Box */}
         <div className="details-info-box">
           <Link to="/" className="back-btn">
             <ArrowLeftIcon size={16} />
-            <span>Back to Movies</span>
+            <span>Back to Browse</span>
           </Link>
 
           <h1 className="details-title">{movie.title}</h1>
@@ -126,73 +123,75 @@ function MovieDetails({ favorites = [], onAddFavorite, onRemoveFavorite }) {
             <p className="details-tagline">"{movie.tagline}"</p>
           )}
 
-          {/* Metadata Chips */}
+          {/* Clean Meta Row */}
           <div className="details-meta-row">
-            <span className="meta-chip gold">
-              <StarIcon size={15} color="#f5c518" />
+            <span className="details-rating">
+              <StarIcon size={15} color="#e5a916" />
               <strong>{rating}</strong>
-              <span style={{ opacity: 0.65, fontSize: "11px" }}>/ 10</span>
+              <span className="details-rating-max">/10</span>
             </span>
 
-            <span className="meta-chip">
+            <span className="meta-divider">•</span>
+
+            <span className="meta-text">
               <ClockIcon size={14} />
               {formatRuntime(movie.runtime)}
             </span>
 
-            <span className="meta-chip">
+            <span className="meta-divider">•</span>
+
+            <span className="meta-text">
               <CalendarIcon size={14} />
               {movie.release_date || releaseYear}
             </span>
 
-            {movie.status && (
-              <span className="meta-chip" style={{ color: "#22c55e" }}>
-                {movie.status}
-              </span>
-            )}
+            <span className="meta-divider">•</span>
+
+            <span className="quality-pill">HD</span>
           </div>
 
-          {/* Genre Badges */}
+          {/* Genres */}
           {movie.genres && movie.genres.length > 0 && (
             <div className="details-genres">
               {movie.genres.map((g) => (
-                <span key={g.id} className="genre-pill">
+                <span key={g.id} className="genre-tag">
                   {g.name}
                 </span>
               ))}
             </div>
           )}
 
-          {/* Actions */}
+          {/* Netflix Style Action Button */}
           <div className="details-actions">
             <button
               type="button"
-              className={isFavorite ? "btn-secondary-cta" : "btn-primary-cta"}
+              className={isFavorite ? "btn-secondary" : "btn-primary"}
               onClick={handleToggleFavorite}
             >
               {isFavorite ? (
                 <>
-                  <CheckIcon size={18} color="#22c55e" />
-                  <span>In Your Watchlist</span>
+                  <CheckIcon size={18} />
+                  <span>In My List</span>
                 </>
               ) : (
                 <>
-                  <HeartIcon size={18} />
-                  <span>Add to Watchlist</span>
+                  <PlusIcon size={18} />
+                  <span>Add to My List</span>
                 </>
               )}
             </button>
           </div>
 
-          {/* Overview */}
-          <h3 className="details-overview-title">Storyline</h3>
+          {/* Synopsis */}
+          <h3 className="details-section-title">Overview</h3>
           <p className="details-overview-text">
             {movie.overview || "No overview available for this title."}
           </p>
 
-          {/* Cast Carousel / Grid */}
+          {/* Cast */}
           {castList.length > 0 && (
             <div className="cast-section">
-              <h3 className="cast-section-title">Top Billed Cast</h3>
+              <h3 className="details-section-title">Cast</h3>
               <div className="cast-grid">
                 {castList.map((actor) => {
                   const photo = actor.profile_path

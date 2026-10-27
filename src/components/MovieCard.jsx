@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { StarIcon, HeartIcon } from "./Icons";
+import { StarIcon, PlusIcon, CheckIcon, PlayIcon } from "./Icons";
 
 function MovieCard({ movie, isFav, onFavToggle }) {
   if (!movie) return null;
@@ -30,36 +30,36 @@ function MovieCard({ movie, isFav, onFavToggle }) {
         }}
       />
 
-      {/* Floating Rating Pill */}
+      {/* Floating Rating Badge */}
       {rating !== "—" && (
         <div className="card-rating-badge">
-          <StarIcon size={12} color="#f5c518" />
+          <StarIcon size={11} color="#e5a916" />
           <span>{rating}</span>
         </div>
       )}
 
-      {/* Hover Information & Quick Action Overlay */}
+      {/* Hover Information Overlay */}
       <div className="movie-card-overlay">
         <h4 className="card-title">{movie.title}</h4>
         <div className="card-meta">
           <span>{year}</span>
           <span>•</span>
-          <span>{movie.original_language?.toUpperCase() || "HD"}</span>
+          <span className="card-quality">HD</span>
         </div>
 
         <div className="card-actions">
-          <Link to={`/movie/${movie.id}`} className="card-btn-view">
-            View
+          <Link to={`/movie/${movie.id}`} className="card-btn-play" title="View details">
+            <PlayIcon size={14} />
+            <span>Play</span>
           </Link>
 
           <button
             type="button"
-            className={`card-btn-fav ${isFav ? "active" : ""}`}
+            className={`card-btn-list ${isFav ? "active" : ""}`}
             onClick={handleFavClick}
-            title={isFav ? "Remove from Watchlist" : "Add to Watchlist"}
-            aria-label={isFav ? "Remove from Watchlist" : "Add to Watchlist"}
+            title={isFav ? "Remove from My List" : "Add to My List"}
           >
-            <HeartIcon size={16} filled={isFav} color={isFav ? "#fff" : "currentColor"} />
+            {isFav ? <CheckIcon size={14} /> : <PlusIcon size={14} />}
           </button>
         </div>
       </div>

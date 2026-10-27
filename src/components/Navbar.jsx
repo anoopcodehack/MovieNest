@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getTheme, setTheme } from "../utils/theme";
-import { FilmIcon, SearchIcon, CloseIcon, SunIcon, MoonIcon, HeartIcon } from "./Icons";
+import { SearchIcon, CloseIcon, SunIcon, MoonIcon } from "./Icons";
 
 function Navbar({ favoritesCount = 0 }) {
   const [theme, setThemeState] = useState(getTheme());
@@ -10,7 +10,6 @@ function Navbar({ favoritesCount = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Sync input when search query param changes
   useEffect(() => {
     setSearchInput(searchParams.get("q") || "");
   }, [searchParams]);
@@ -51,26 +50,20 @@ function Navbar({ favoritesCount = 0 }) {
     <nav className="nav">
       <div className="nav-left">
         <Link to="/" className="logo">
-          <div className="logo-badge">
-            <FilmIcon size={20} color="#fff" />
-          </div>
-          <span className="logo-text">
-            Movie<span>Nest</span>
-          </span>
+          MOVIENEST
         </Link>
 
         <div className="nav-links">
           <Link to="/" className={`nav-link ${isHomeActive ? "active" : ""}`}>
-            <span>Home</span>
+            Home
           </Link>
           <Link
             to="/favorites"
             className={`nav-link ${isFavoritesActive ? "active" : ""}`}
           >
-            <HeartIcon size={15} filled={isFavoritesActive} />
-            <span>Watchlist</span>
+            My List
             {favoritesCount > 0 && (
-              <span className="nav-badge-count">{favoritesCount}</span>
+              <span className="nav-count">({favoritesCount})</span>
             )}
           </Link>
         </div>
@@ -84,7 +77,7 @@ function Navbar({ favoritesCount = 0 }) {
           <input
             type="text"
             className="nav-search-input"
-            placeholder="Search movies, genres..."
+            placeholder="Titles, people, genres"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />

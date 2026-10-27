@@ -1,35 +1,24 @@
 import { Link } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
-import { FilmIcon, HeartIcon } from "../components/Icons";
 
 function Favorites({ favorites = [], onRemoveFavorite }) {
   return (
     <div className="favorites-page">
       <div className="favorites-header">
-        <div className="favorites-title-wrap">
-          <HeartIcon size={26} filled color="var(--accent)" />
-          <h1 className="favorites-title">My Watchlist</h1>
-        </div>
-
+        <h1 className="favorites-title">My List</h1>
         {favorites.length > 0 && (
-          <span className="favorites-count-badge">
-            {favorites.length} {favorites.length === 1 ? "Movie" : "Movies"} Saved
-          </span>
+          <span className="favorites-count">{favorites.length} Titles</span>
         )}
       </div>
 
       {favorites.length === 0 ? (
-        <div className="empty-favorites">
-          <div className="empty-icon-wrap">
-            <FilmIcon size={34} />
-          </div>
-          <h3>Your Watchlist is Empty</h3>
+        <div className="empty-state">
+          <h3>Your list is empty</h3>
           <p>
-            You haven't saved any movies yet. Browse trending titles and tap the
-            heart icon on any movie card to add it to your personal watchlist!
+            Explore popular and trending titles to build your personal watchlist.
           </p>
-          <Link to="/" className="btn-primary-cta">
-            Explore Trending Movies
+          <Link to="/" className="btn-primary">
+            Browse Movies
           </Link>
         </div>
       ) : (
