@@ -1,8 +1,15 @@
 import { useEffect } from "react";
-import { CloseIcon } from "./Icons";
+import { Link } from "react-router-dom";
+import { CloseIcon, InfoIcon } from "./Icons";
 
-function TrailerModal({ isOpen, onClose, videoKey, title = "Trailer" }) {
-  // Handle ESC key press & lock background scrolling
+function TrailerModal({
+  isOpen,
+  onClose,
+  videoKey,
+  title = "Trailer",
+  movieId = null,
+  isTv = false,
+}) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -57,6 +64,19 @@ function TrailerModal({ isOpen, onClose, videoKey, title = "Trailer" }) {
             </div>
           )}
         </div>
+
+        {movieId && (
+          <div className="trailer-modal-footer">
+            <Link
+              to={`/movie/${movieId}${isTv ? "?type=tv" : ""}`}
+              className="trailer-modal-details-btn"
+              onClick={onClose}
+            >
+              <InfoIcon size={16} />
+              <span>View Full Movie Details, Cast & Overview →</span>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

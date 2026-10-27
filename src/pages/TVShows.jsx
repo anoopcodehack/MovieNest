@@ -28,6 +28,8 @@ function TVShows({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     isOpen: false,
     videoKey: null,
     title: "",
+    movieId: null,
+    isTv: true,
   });
 
   useEffect(() => {
@@ -118,6 +120,8 @@ function TVShows({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         isOpen: true,
         videoKey: trailer ? trailer.key : null,
         title: item.name || item.title || "Series",
+        movieId: item.id,
+        isTv: true,
       });
     } catch (err) {
       console.error("Error fetching trailer:", err);
@@ -125,12 +129,14 @@ function TVShows({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         isOpen: true,
         videoKey: null,
         title: item.name || item.title || "Series",
+        movieId: item.id,
+        isTv: true,
       });
     }
   };
 
   const closeTrailer = () => {
-    setTrailerData({ isOpen: false, videoKey: null, title: "" });
+    setTrailerData({ isOpen: false, videoKey: null, title: "", movieId: null, isTv: true });
   };
 
   if (loadingInitial) {
@@ -207,6 +213,8 @@ function TVShows({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         onClose={closeTrailer}
         videoKey={trailerData.videoKey}
         title={trailerData.title}
+        movieId={trailerData.movieId}
+        isTv={trailerData.isTv}
       />
     </main>
   );

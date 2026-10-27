@@ -25,6 +25,8 @@ function Explore({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     isOpen: false,
     videoKey: null,
     title: "",
+    movieId: null,
+    isTv: false,
   });
 
   // Fetch genres once on mount
@@ -131,20 +133,24 @@ function Explore({ favorites = [], onAddFavorite, onRemoveFavorite }) {
       setTrailerData({
         isOpen: true,
         videoKey: trailer ? trailer.key : null,
-        title: movie.title || "Movie",
+        title: movie.title || movie.name || "Movie",
+        movieId: movie.id,
+        isTv: false,
       });
     } catch (err) {
       console.error("Error fetching trailer:", err);
       setTrailerData({
         isOpen: true,
         videoKey: null,
-        title: movie.title || "Movie",
+        title: movie.title || movie.name || "Movie",
+        movieId: movie.id,
+        isTv: false,
       });
     }
   };
 
   const closeTrailer = () => {
-    setTrailerData({ isOpen: false, videoKey: null, title: "" });
+    setTrailerData({ isOpen: false, videoKey: null, title: "", movieId: null, isTv: false });
   };
 
   return (
@@ -262,6 +268,8 @@ function Explore({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         onClose={closeTrailer}
         videoKey={trailerData.videoKey}
         title={trailerData.title}
+        movieId={trailerData.movieId}
+        isTv={trailerData.isTv}
       />
     </main>
   );

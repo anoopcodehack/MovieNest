@@ -38,6 +38,8 @@ function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
     isOpen: false,
     videoKey: null,
     title: "",
+    movieId: null,
+    isTv: false,
   });
 
   useEffect(() => {
@@ -161,6 +163,8 @@ function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         isOpen: true,
         videoKey: trailer ? trailer.key : null,
         title: movie.title || movie.name || "Movie",
+        movieId: movie.id,
+        isTv: Boolean(movie.first_air_date || movie.name),
       });
     } catch (err) {
       console.error("Error fetching trailer:", err);
@@ -168,12 +172,14 @@ function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         isOpen: true,
         videoKey: null,
         title: movie.title || movie.name || "Movie",
+        movieId: movie.id,
+        isTv: Boolean(movie.first_air_date || movie.name),
       });
     }
   };
 
   const closeTrailer = () => {
-    setTrailerData({ isOpen: false, videoKey: null, title: "" });
+    setTrailerData({ isOpen: false, videoKey: null, title: "", movieId: null, isTv: false });
   };
 
   if (query.trim()) {
@@ -235,6 +241,8 @@ function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
           onClose={closeTrailer}
           videoKey={trailerData.videoKey}
           title={trailerData.title}
+          movieId={trailerData.movieId}
+          isTv={trailerData.isTv}
         />
       </main>
     );
@@ -314,6 +322,8 @@ function Home({ favorites = [], onAddFavorite, onRemoveFavorite }) {
         onClose={closeTrailer}
         videoKey={trailerData.videoKey}
         title={trailerData.title}
+        movieId={trailerData.movieId}
+        isTv={trailerData.isTv}
       />
     </main>
   );

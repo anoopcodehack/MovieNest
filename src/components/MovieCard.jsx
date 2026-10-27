@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { StarIcon, PlusIcon, CheckIcon, PlayIcon } from "./Icons";
+import { StarIcon, PlusIcon, CheckIcon, PlayIcon, InfoIcon } from "./Icons";
 
 function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
   if (!movie) return null;
@@ -31,16 +31,19 @@ function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
 
   return (
     <div className="movie-card">
-      <img
-        src={poster}
-        alt={title}
-        className="movie-poster-img"
-        loading="lazy"
-        onError={(e) => {
-          e.currentTarget.src =
-            "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80";
-        }}
-      />
+      {/* Clicking poster navigates to Movie Details */}
+      <Link to={detailLink} className="movie-card-link">
+        <img
+          src={poster}
+          alt={title}
+          className="movie-poster-img"
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src =
+              "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80";
+          }}
+        />
+      </Link>
 
       {/* Floating Rating Badge */}
       {rating !== "—" && (
@@ -52,7 +55,10 @@ function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
 
       {/* Hover Information Overlay */}
       <div className="movie-card-overlay">
-        <h4 className="card-title">{title}</h4>
+        <Link to={detailLink} className="card-title-link">
+          <h4 className="card-title">{title}</h4>
+        </Link>
+
         <div className="card-meta">
           <span>{year}</span>
           <span>•</span>
@@ -60,6 +66,7 @@ function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
         </div>
 
         <div className="card-actions">
+          {/* Play / Watch Trailer */}
           {onPlayTrailer ? (
             <button
               type="button"
@@ -77,6 +84,7 @@ function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
             </Link>
           )}
 
+          {/* Add / Remove from My List */}
           <button
             type="button"
             className={`card-btn-list ${isFav ? "active" : ""}`}
@@ -85,6 +93,15 @@ function MovieCard({ movie, isFav, onFavToggle, onPlayTrailer }) {
           >
             {isFav ? <CheckIcon size={14} /> : <PlusIcon size={14} />}
           </button>
+
+          {/* Explicit "More Info" button */}
+          <Link
+            to={detailLink}
+            className="card-btn-info"
+            title="More Info (Cast & Details)"
+          >
+            <InfoIcon size={15} />
+          </Link>
         </div>
       </div>
     </div>

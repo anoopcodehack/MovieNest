@@ -404,6 +404,23 @@ button {
   opacity: 0.85;
 }
 
+.hero-btn-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--btn-list-bg);
+  color: var(--btn-list-text);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.hero-btn-info:hover {
+  background-color: rgba(109, 109, 110, 0.45);
+}
+
 .hero-btn-list {
   display: inline-flex;
   align-items: center;
@@ -630,6 +647,39 @@ button {
 }
 
 .card-btn-list:hover {
+  border-color: #ffffff;
+  background-color: rgba(60, 60, 60, 0.9);
+}
+
+.movie-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.card-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-title-link:hover .card-title {
+  color: #ffffff;
+}
+
+.card-btn-info {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(40, 40, 40, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  border-radius: 50%;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.card-btn-info:hover {
   border-color: #ffffff;
   background-color: rgba(60, 60, 60, 0.9);
 }
@@ -1218,6 +1268,28 @@ button {
   justify-content: center;
   color: var(--text-muted);
   font-size: 14px;
+}
+
+.trailer-modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--bg-surface);
+}
+
+.trailer-modal-details-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.trailer-modal-details-btn:hover {
+  color: var(--accent-red);
 }
 
 /* ==========================================================================

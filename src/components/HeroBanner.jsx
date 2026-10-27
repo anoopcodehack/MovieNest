@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { PlayIcon, PlusIcon, CheckIcon, StarIcon } from "./Icons";
+import { PlayIcon, PlusIcon, CheckIcon, StarIcon, InfoIcon } from "./Icons";
 
 function HeroBanner({ movie, isFav, onFavToggle, onPlayTrailer }) {
   if (!movie) return null;
@@ -32,7 +32,9 @@ function HeroBanner({ movie, isFav, onFavToggle, onPlayTrailer }) {
           </span>
         </div>
 
-        <h1 className="hero-title">{title}</h1>
+        <Link to={detailLink} style={{ color: "inherit" }}>
+          <h1 className="hero-title">{title}</h1>
+        </Link>
 
         <div className="hero-meta">
           <span className="hero-rating">
@@ -50,26 +52,31 @@ function HeroBanner({ movie, isFav, onFavToggle, onPlayTrailer }) {
         </p>
 
         <div className="hero-actions">
-          {onPlayTrailer ? (
+          {/* Watch Trailer */}
+          {onPlayTrailer && (
             <button
               type="button"
               className="hero-btn-play"
               onClick={() => onPlayTrailer(movie)}
+              title="Watch Trailer"
             >
               <PlayIcon size={20} />
               <span>Watch Trailer</span>
             </button>
-          ) : (
-            <Link to={detailLink} className="hero-btn-play">
-              <PlayIcon size={20} />
-              <span>Play</span>
-            </Link>
           )}
 
+          {/* More Info */}
+          <Link to={detailLink} className="hero-btn-info" title="Full details and cast">
+            <InfoIcon size={19} />
+            <span>More Info</span>
+          </Link>
+
+          {/* Watchlist */}
           <button
             type="button"
             className="hero-btn-list"
             onClick={() => onFavToggle(movie)}
+            title={isFav ? "In My List" : "Add to My List"}
           >
             {isFav ? (
               <>
