@@ -5,65 +5,78 @@ import Favorites from "./pages/Favorites";
 import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import "./App.css";
 
 function App() {
-  
-  
   const [favorites, setFavorites] = useState(() => {
-    const stored = localStorage.getItem("favorites");
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const stored = localStorage.getItem("favorites");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  
   const addFavorite = (movie) => {
-    setFavorites(prev => {
-      if (prev.some(f => f.id === movie.id)) return prev;
+    setFavorites((prev) => {
+      if (prev.some((f) => f.id === movie.id)) return prev;
       return [...prev, movie];
     });
   };
 
-  
   const removeFavorite = (id) => {
-    setFavorites(prev => prev.filter(m => m.id !== id));
+    setFavorites((prev) => prev.filter((m) => m.id !== id));
   };
 
   return (
     <BrowserRouter>
-      <Navbar />
+      <div className="app-container">
+        <Navbar favoritesCount={favorites.length} />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              favorites={favorites}
-              onAddFavorite={addFavorite}
-              onRemoveFavorite={removeFavorite}
+        <div className="main-content">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  favorites={favorites}
+                  onAddFavorite={addFavorite}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
             />
-          }
-        />
 
-        <Route
-          path="/favorites"
-          element={
-            <Favorites
-              favorites={favorites}
-              onRemoveFavorite={removeFavorite}
+            <Route
+              path="/favorites"
+              element={
+                <Favorites
+                  favorites={favorites}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
             />
-          }
-        />
 
-        <Route path="/movie/:id" element={<MovieDetails />} />
-      </Routes>
+            <Route
+              path="/movie/:id"
+              element={
+                <MovieDetails
+                  favorites={favorites}
+                  onAddFavorite={addFavorite}
+                  onRemoveFavorite={removeFavorite}
+                />
+              }
+            />
+          </Routes>
+        </div>
 
-      <Footer />
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }
 
 export default App;
-
