@@ -5,37 +5,50 @@ import "swiper/css/navigation";
 
 import MovieCard from "./MovieCard";
 
-function MovieSlider({ title, movies, favorites, onFavToggle }) {
+function MovieSlider({ title, movies = [], favorites = [], onFavToggle }) {
+  if (!movies || !movies.length) return null;
+
   return (
-    <div className="movie-slider">
-      <h2>{title}</h2>
+    <section className="movie-slider">
+      <div className="row-header">
+        <div className="row-title-container">
+          <div className="row-accent-bar" />
+          <h2 className="row-title">{title}</h2>
+        </div>
+      </div>
 
       <Swiper
         modules={[Autoplay, Navigation]}
-        spaceBetween={20}
+        spaceBetween={18}
         slidesPerView={5}
         navigation
         autoplay={{
-          delay: 2500,
+          delay: 3500,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
         }}
         breakpoints={{
-          320: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          1024: { slidesPerView: 5 },
+          320: { slidesPerView: 2, spaceBetween: 12 },
+          640: { slidesPerView: 3, spaceBetween: 14 },
+          900: { slidesPerView: 4, spaceBetween: 16 },
+          1200: { slidesPerView: 5, spaceBetween: 18 },
+          1440: { slidesPerView: 6, spaceBetween: 20 },
         }}
       >
-        {movies.map(movie => (
-          <SwiperSlide key={movie.id}>
-            <MovieCard
-              movie={movie}
-              favorites={favorites}
-              onFavToggle={onFavToggle}
-            />
-          </SwiperSlide>
-        ))}
+        {movies.map((movie) => {
+          const isFavorite = favorites.some((f) => f.id === movie.id);
+          return (
+            <SwiperSlide key={movie.id}>
+              <MovieCard
+                movie={movie}
+                isFav={isFavorite}
+                onFavToggle={onFavToggle}
+              />
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
-    </div>
+    </section>
   );
 }
 
